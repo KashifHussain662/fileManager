@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-  Text,
-  TouchableOpacity,
-  ImageBackground,
-} from 'react-native';
+import {View, StyleSheet, Image, Text, ImageBackground} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import {images} from '../../theme';
 

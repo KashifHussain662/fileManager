@@ -9,6 +9,7 @@ import {
   Text,
 } from 'react-native';
 import {images} from '../../theme';
+
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
@@ -18,6 +19,12 @@ const Home = ({navigation, route}) => {
   const getFileExtension = filePath => {
     return filePath.split('.').pop();
   };
+
+  const getFileName = filePath => {
+    // Extracting file name without extension
+    return filePath.split('/').pop().split('.').shift();
+  };
+
   return (
     <View style={styles.container}>
       {selectedImages && selectedImages.length > 0 && (
@@ -38,9 +45,10 @@ const Home = ({navigation, route}) => {
                 }
                 style={type == 'image' ? styles.image : styles.videoIcon}
               />
-
               <Text style={styles.extensionText}>
-                {getFileExtension(item.path)}
+                File Name: {getFileName(item.path)}
+                {'\n'}
+                Extension: {getFileExtension(item.path)}
               </Text>
             </TouchableOpacity>
           )}
@@ -65,12 +73,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: 'gray',
   },
   image: {
     resizeMode: 'cover',
     width: '100%',
-    height: '87.5%',
+    height: '75%',
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },

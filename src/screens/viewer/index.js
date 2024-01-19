@@ -17,7 +17,7 @@ const Viewer = ({route}) => {
       {type === 'video' && (
         <Video
           controls={true}
-          source={{uri: source, type: 'mp4'}}
+          source={{uri: source}}
           style={styles.backgroundVideo}
           resizeMode="contain" // Ensure video content fits the container
         />
