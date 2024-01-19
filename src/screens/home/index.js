@@ -38,6 +38,7 @@ const Home = ({navigation, route}) => {
                 }
                 style={type == 'image' ? styles.image : styles.videoIcon}
               />
+
               <Text style={styles.extensionText}>
                 {getFileExtension(item.path)}
               </Text>
@@ -69,17 +70,18 @@ const styles = StyleSheet.create({
   image: {
     resizeMode: 'cover',
     width: '100%',
-    height: '85%',
+    height: '87.5%',
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
   videoIcon: {
-    width: 40,
-    height: 40,
+    width: 60,
+    height: 60,
   },
   extensionText: {
     color: 'white',
-    marginTop: 5,
+    marginTop: 4,
+    marginBottom: 5,
     fontSize: 16,
     fontWeight: '900',
   },
