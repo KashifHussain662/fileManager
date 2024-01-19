@@ -1,21 +1,47 @@
 import React from 'react';
-import {View, StyleSheet, FlatList, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
+import {images} from '../../theme';
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 
-const HomeScreen = ({route}) => {
-  const {selectedImages} = route.params;
+const Home = ({navigation, route}) => {
+  const {selectedImages, type} = route.params;
 
+  const getFileExtension = filePath => {
+    return filePath.split('.').pop();
+  };
   return (
     <View style={styles.container}>
       {selectedImages && selectedImages.length > 0 && (
         <FlatList
           data={selectedImages}
+          keyExtractor={(item, index) => index.toString()}
+          numColumns={2}
+          style={{paddingVertical: 16}}
           renderItem={({item}) => (
-            <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Viewer', {source: item.path, type: type})
+              }
+              style={styles.itemContainer}>
               <Image
-                source={{uri: item}}
-                style={{width: 300, height: 300, margin: 10}}
+                source={
+                  type === 'image' ? {uri: item.path} : images.icUploadVideo
+                }
+                style={type == 'image' ? styles.image : styles.videoIcon}
               />
-            </View>
+              <Text style={styles.extensionText}>
+                {getFileExtension(item.path)}
+              </Text>
+            </TouchableOpacity>
           )}
         />
       )}
@@ -23,7 +49,6 @@ const HomeScreen = ({route}) => {
   );
 };
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -31,6 +56,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#2c3e50',
   },
+  itemContainer: {
+    backgroundColor: '#000',
+    width: width / 2 - 16,
+    height: 180,
+    margin: 6,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'gray',
+  },
+  image: {
+    resizeMode: 'cover',
+    width: '100%',
+    height: '85%',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+  },
+  videoIcon: {
+    width: 40,
+    height: 40,
+  },
+  extensionText: {
+    color: 'white',
+    marginTop: 5,
+    fontSize: 16,
+    fontWeight: '900',
+  },
 });
 
-export default HomeScreen;
+export default Home;
