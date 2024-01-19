@@ -7,18 +7,19 @@ const Viewer = ({route}) => {
 
   return (
     <View style={styles.container}>
-      {type == 'image' && (
+      {type === 'image' && (
         <Image
-          resizeMethod="contain"
+          resizeMode="contain"
           style={styles.image}
           source={{uri: source}}
         />
       )}
-      {type == 'video' && (
+      {type === 'video' && (
         <Video
           controls={true}
           source={{uri: source, type: 'mp4'}}
           style={styles.backgroundVideo}
+          resizeMode="contain" // Ensure video content fits the container
         />
       )}
     </View>
@@ -35,14 +36,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#2c3e50',
   },
   image: {
+    flex: 1,
     width: '100%',
     height: '100%',
   },
   backgroundVideo: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+    flex: 1,
+    alignSelf: 'stretch',
   },
 });
