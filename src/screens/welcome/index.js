@@ -41,12 +41,18 @@ const Welcome = ({navigation}) => {
         <Text onPress={handleImagePicker} style={styles.title}>
           Upload Image
         </Text>
-        <Image source={images.icUploadImage} />
+        <View>
+          <Image source={images.icUploadImage} />
+          <Text style={styles.badge}>(0)</Text>
+        </View>
 
         <Text onPress={handleVideoPicker} style={styles.title}>
           Upload Video
         </Text>
-        <Image source={images.icUploadVideo} />
+        <View>
+          <Image source={images.icUploadVideo} />
+          <Text style={styles.badge}>(0)</Text>
+        </View>
       </View>
     </ImageBackground>
   );
@@ -81,6 +87,46 @@ const styles = StyleSheet.create({
   text: {
     color: 'black',
   },
+  badge: {
+    position: 'absolute',
+    top: -5,
+    right: -3,
+    backgroundColor: 'red',
+    color: 'white',
+    padding: 5,
+    borderRadius: 10,
+  },
 });
 
 export default Welcome;
+
+// import React from 'react';
+// import { View, Text, StyleSheet } from 'react-native';
+
+// const BadgeBox = () => {
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.badge}>Badge</Text>
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     width: 200,
+//     height: 200,
+//     backgroundColor: 'lightblue',
+//     position: 'relative',
+//   },
+//   badge: {
+//     position: 'absolute',
+//     top: 5,
+//     right: 5,
+//     backgroundColor: 'red',
+//     color: 'white',
+//     padding: 5,
+//     borderRadius: 10,
+//   },
+// });
+
+// export default BadgeBox;
