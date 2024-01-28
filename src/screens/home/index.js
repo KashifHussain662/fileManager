@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -7,26 +7,67 @@ import {
   Dimensions,
   TouchableOpacity,
   Text,
+  Button,
+  ActivityIndicator,
 } from 'react-native';
-import {images} from '../../theme';
 
 const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
 
 const Home = ({navigation, route}) => {
   const {selectedImages, type} = route.params;
+  const [ads, setAds] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const getFileExtension = filePath => {
-    return filePath.split('.').pop();
-  };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch('https://api.example.com/jazzcash/ads', {
+  //         method: 'GET',
+  //         headers: {
+  //           Authorization: 'Bearer YOUR_API_KEY',
+  //         },
+  //         timeout: 10000,
+  //       });
 
-  const getFileName = filePath => {
-    // Extracting file name without extension
-    return filePath.split('/').pop().split('.').shift();
-  };
+  //       const data = await response.json();
+  //       setAds(data);
+  //       console.log('API Response:', data); // Log the API response
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  // const handleNext = () => {
+  //   const nextIndex = (currentIndex + 1) % ads.length;
+  //   setCurrentIndex(nextIndex);
+  // };
+
+  // if (loading) {
+  //   return <ActivityIndicator size="large" color="#ffffff" />;
+  // }
+
+  // if (ads.length === 0) {
+  //   return <Text>No ads available</Text>;
+  // }
+
+  // const imageUrl =
+  //   ads[currentIndex].imageUrl || 'https://via.placeholder.com/200';
 
   return (
     <View style={styles.container}>
+      {/* <View>
+        <Text>Featured Ads</Text>
+        <View>
+          <Image source={{uri: imageUrl}} style={styles.image} />
+          <Button title="Next" onPress={handleNext} />
+        </View>
+      </View> */}
       {selectedImages && selectedImages.length > 0 && (
         <FlatList
           data={selectedImages}
@@ -41,14 +82,16 @@ const Home = ({navigation, route}) => {
               style={styles.itemContainer}>
               <Image
                 source={
-                  type === 'image' ? {uri: item.path} : images.icUploadVideo
+                  type === 'image'
+                    ? {uri: item.path}
+                    : {uri: 'https://via.placeholder.com/200'}
                 }
-                style={type == 'image' ? styles.image : styles.videoIcon}
+                style={type === 'image' ? styles.image : styles.videoIcon}
               />
               <Text style={styles.extensionText}>
-                File Name: {getFileName(item.path)}
+                File Name: {item.fileName}
                 {'\n'}
-                Extension: {getFileExtension(item.path)}
+                Extension: {item.fileExtension}
               </Text>
             </TouchableOpacity>
           )}
@@ -76,8 +119,8 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: 'cover',
-    width: '100%',
-    height: '75%',
+    width: 200,
+    height: 200,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
