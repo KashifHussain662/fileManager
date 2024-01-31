@@ -1,42 +1,50 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
   Image,
   TouchableOpacity,
   Text,
-  Button,
   Alert,
 } from 'react-native';
 import PhotoEditor from '@baronha/react-native-photo-editor';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import RNFS from 'react-native-fs'; // Add this import
 import {images} from '../../theme';
+import Toast from 'react-native-toast-message';
 
 const Viewer = ({route}) => {
   const {type = 'image', source = null} = route.params;
-  const handleShare = () => {
-    // Logic to handle share option
-    Alert.alert('Share', 'Share option clicked');
-  };
+  const [editedImagePath, setEditedImagePath] = useState(null);
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  const handleEdit = () => {
-    // Logic to handle edit option
-    Alert.alert('Edit', 'Edit option clicked');
-  };
-
-  const handleDelete = () => {
-    // Logic to handle delete option
-    Alert.alert('Delete', 'Delete option clicked');
-  };
-
-  const openPhotoEditor = async () => {
+  const handleEdit = async () => {
     try {
       const result = await PhotoEditor.open({
         path: source,
         outputFormat: 'JPEG',
         quality: 0.8,
-        onDone: () => {
-          console.log('Photo editing done');
+        onDone: async result => {
+          if (result.error) {
+            console.error('Photo editing error:', result.error);
+            Alert.alert('Error', 'Failed to save changes');
+          } else {
+            console.log('Photo editing done:', result);
+            // Update state with the edited image path
+            setEditedImagePath(result.path);
+
+            // Save the edited image to the gallery
+            try {
+              const galleryPath = RNFS.DocumentDirectoryPath + '/Gallery';
+              await RNFS.mkdir(galleryPath);
+              const fileName = 'edited_image.jpg';
+              const destPath = galleryPath + '/' + fileName;
+              await RNFS.moveFile(result.path, destPath);
+              Alert.alert('Success', 'Image saved to gallery');
+            } catch (error) {
+              console.error('Error saving to gallery:', error);
+              Alert.alert('Error', 'Failed to save image to gallery');
+            }
+          }
         },
         onCancel: () => {
           console.log('Photo editing cancelled');
@@ -44,23 +52,62 @@ const Viewer = ({route}) => {
       });
     } catch (error) {
       console.error('Error opening photo editor:', error);
+      Alert.alert('Error', 'Failed to open photo editor');
     }
   };
 
   useEffect(() => {
-    //  photo editor automatically open.
+    // photo editor automatically open.
     // openPhotoEditor();
   }, []);
+
+  const handleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    const message = isFavorite
+      ? 'Removed from favorites'
+      : 'Added to favorites';
+    // Alert.alert('Favorite', message);
+
+    // Show toast message
+    Toast.show({
+      type: isFavorite ? 'success' : 'error',
+      position: 'top',
+      text1: 'Favorite Status',
+      text2: message,
+      visibilityTime: 2000, // 2 seconds
+      autoHide: true,
+    });
+  };
+
+  const handleDelete = () => {
+    // Logic to handle share option
+    Alert.alert('Delete', 'Delete option clicked');
+  };
+
+  const handleShare = () => {
+    // Logic to handle edit option
+    Alert.alert('Share', 'Share option clicked');
+  };
 
   return (
     <View style={styles.container}>
       {type === 'image' && (
         <>
-          <Image
-            resizeMode="contain"
-            style={styles.image}
-            source={{uri: source}}
-          />
+          {editedImagePath ? (
+            // Display the edited image
+            <Image
+              resizeMode="contain"
+              style={styles.image}
+              source={{uri: editedImagePath}}
+            />
+          ) : (
+            // Display the original image
+            <Image
+              resizeMode="contain"
+              style={styles.image}
+              source={{uri: source}}
+            />
+          )}
           {/* Options */}
           <View
             style={{
@@ -70,7 +117,7 @@ const Viewer = ({route}) => {
               backgroundColor: 'white',
               padding: 0,
             }}>
-            <TouchableOpacity onPress={handleShare}>
+            <TouchableOpacity onPress={handleEdit}>
               <View
                 style={{
                   alignItems: 'center',
@@ -81,7 +128,7 @@ const Viewer = ({route}) => {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleEdit}>
+            <TouchableOpacity onPress={handleFavorite}>
               <View
                 style={{
                   alignItems: 'center',
@@ -108,7 +155,7 @@ const Viewer = ({route}) => {
                 <Text style={{color: 'black'}}>Delete</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleDelete}>
+            <TouchableOpacity onPress={handleShare}>
               <View
                 style={{
                   alignItems: 'center',
@@ -131,8 +178,6 @@ const Viewer = ({route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
     backgroundColor: '#2c3e50',
   },
   image: {

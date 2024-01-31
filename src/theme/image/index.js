@@ -6,4 +6,5 @@ export default {
   icEdit: require('../../assets/images/edit.png'),
   icDelete: require('../../assets/images/delete.png'),
   icfavorite: require('../../assets/images/favorite.png'),
+  // icLogo: require('../../assets/images/logo.png'),
 };
