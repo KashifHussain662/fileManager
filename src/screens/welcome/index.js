@@ -53,6 +53,7 @@ const Welcome = ({navigation}) => {
           <Image source={images.icUploadVideo} />
           <Text style={styles.badge}>(0)</Text>
         </View>
+        <Text onPress={() => navigation.navigate('Profile')}>Next</Text>
       </View>
     </ImageBackground>
   );

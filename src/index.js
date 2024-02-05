@@ -1,8 +1,14 @@
 import React from 'react';
+import DarkModeSwitch from './screens/profile';
 import RootStack from './routes';
+import {ThemeProvider} from './contaxt';
 
 const App = () => {
-  return <RootStack />;
+  return (
+    <ThemeProvider>
+      <RootStack />
+    </ThemeProvider>
+  );
 };
 
 export default App;
